@@ -25,7 +25,7 @@ def print_all():
 
     print('\n\n')
     
-def revenue_growth():
+def positive_growth():
     cursor.execute("SELECT * FROM company_data WHERE revenue_growth >0 ")
 
     print(f'{"Company Name":<19}{"Industry":<21}{"Revenue":<10}{"Growth":<10}{"Employee Count":<20}{"Headquarter":<20}{"Founded Date":<10}')
@@ -61,26 +61,19 @@ def record_by_date():
     print(date_str)
     
 def companies_between_dates():
-    date_list[]
-    while len (date_list) <= 1:
-        d = int(input("Enter Day: "))
-        m = int(input("Enter Month: "))
-        y = int(input("Enter Year: "))
+    start_date_entry = entry_start_date.get()
+    end_date_entry = entry_end_date.get()
+    start_date = datetime.strptime(start_date_entry, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date_entry, "%Y-%m-%d")
+
         
-        date = datetime(y, m, d)
-        udate = date.strftime('%d/%m/%Y')
-        
-        date_list.append(udate)
-        print('\n',date_list)
-        
-    cursor.execute('SELECT * FROM company_data WHERE company_founded BETWEEN ? AND ?',(date_list[0],date_list[1]))
+    cursor.execute('SELECT * FROM company_data WHERE company_founded BETWEEN ? AND ?',(start_date, end_date))
 
 
     print(f'{"Company Name":<19}{"Industry":<21}{"Revenue":<10}{"Growth":<10}{"Employee Count":<20}{"Headquarter":<20}{"Founded Date":<10}')
     print(f'{"_":_<120}')
 
     for row in cursor.fetchall():
-        date = datetime.strftime(row.company_founded,   '%d/%m/%Y')
         record = f'{row.company_name:<19}{row.industry:<21}{row.year_revenue:<10}{row.revenue_growth:<10}{row.employee_no:<20}{row.headquarter:<20}{date:<10}'
 
         print(record)
@@ -88,4 +81,21 @@ def companies_between_dates():
         print('\n\n')
 
     
-companies_between_dates()
+root = tk.Tk()
+root.title("Company Management Data")
+
+frame = tk.Frame(root)
+frame.pack(pady=10)
+
+print_allbtn = tk.Button(frame, text="Print All Records", command=print_all)
+print_allbtn.grid(row=0, column=0, padx=10, pady=10)
+
+positive_growthbtn = tk.Button(frame, text="Print Positive Growth", command=positive_growth)
+positive_growthbtn.grid(row=1, column=0, padx=10, pady=10)
+
+
+
+
+
+
+root.mainloop()
