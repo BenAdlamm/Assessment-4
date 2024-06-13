@@ -40,29 +40,19 @@ def positive_growth():
     print('\n\n')
 
 def record_by_date():
-    d = int(input("Enter Day: "))
-    m = int(input("Enter Month: "))
-    y = int(input("Enter Year: "))
-    
-    date = datetime(y, m, d)
-    udate = date.strftime('%d/%m/%Y')
-    
-    cursor.execute("SELECT * FROM company_data")
-    
-    for row in cursor.fetchall():
-        rowDate = datetime.strftime(row.company_founded,    '%d/%m/%Y')
-    
-        if udate in rowDate:
-            date_str = 'Company Name: {name} /nRevenue: {revenue}'.format(name=row.company_name, revenue=row.year_revenue)
-            break
-        else:
-            date_str = "Records not found"
+    date_input = entry_date.get()
+    cursor.execute("SELECT * FROM company_data WHERE company_founded = ?", (date_input))
+    records = cursor.fetchall()
+    if records:
+        print(records)
+    else:
+        messagebox.showinfo("No records found")
         
-    print(date_str)
-    
+       
+
 def companies_between_dates():
-    start_date_entry = entry_start_date.get()
-    end_date_entry = entry_end_date.get()
+    start_date_entry = input_start_date.get()
+    end_date_entry = input_end_date.get()
     start_date = datetime.strptime(start_date_entry, "%Y-%m-%d")
     end_date = datetime.strptime(end_date_entry, "%Y-%m-%d")
 
@@ -80,22 +70,42 @@ def companies_between_dates():
 
         print('\n\n')
 
-    
-root = tk.Tk()
-root.title("Company Management Data")
+#GUI start
+master = tk.Tk()
+master.title("Company Management Data")
+# master.geometry("700x400")
 
-frame = tk.Frame(root)
+frame = tk.Frame(master)
 frame.pack(pady=10)
 
+#print all
 print_allbtn = tk.Button(frame, text="Print All Records", command=print_all)
 print_allbtn.grid(row=0, column=0, padx=10, pady=10)
 
-positive_growthbtn = tk.Button(frame, text="Print Positive Growth", command=positive_growth)
-positive_growthbtn.grid(row=1, column=0, padx=10, pady=10)
+#positive growth
+positive_growthbtn = tk.Button(frame, text="Print Companies With Positive Growth", command=positive_growth)
+positive_growthbtn.grid(row=0, column=1, padx=10, pady=10)
+
+#company by date
+label_date = tk.Label(frame, text="Enter Date (DD/MM/YYYY): ")
+label_date.grid(row=1, column=0, padx=10, pady=10)
+entry_date = tk.Entry(frame)
+entry_date.grid(row=1, column=1, padx=10, pady=10)
+record_by_datebtn = tk.Button(frame, text="Search Companies By Date", command=record_by_date)
+record_by_datebtn.grid(row=1, column=2, padx=10, pady=10)
+
+#company's within dates
+label_start_date = tk.Label(frame, text="Enter Start Date (DD/MM/YYYY): ")
+label_start_date.grid(row=2, column=0, padx=10, pady=10)
+input_start_date = tk.Entry(frame)
+input_start_date.grid(row=2, column=1, padx=10, pady=10)
+label_end_date = tk.Label(frame, text="Enter End Date (DD/MM/YYYY): ")
+label_end_date.grid(row=2, column=2, padx=10, pady=10)
+input_end_date = tk.Entry(frame)
+input_end_date.grid(row=2, column=3, padx=10, pady=10)
+companies_between_datesbtn = tk.Button(frame, text="Search Companies Between These Dates", command=companies_between_dates)
+companies_between_datesbtn.grid(row=2, column=4, padx=10, pady=10)
 
 
 
-
-
-
-root.mainloop()
+tk.mainloop()
