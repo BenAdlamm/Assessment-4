@@ -41,34 +41,40 @@ def positive_growth():
 
 def record_by_date():
     date_input = entry_date.get()
-    cursor.execute("SELECT * FROM company_data WHERE company_founded = ?", (date_input))
-    records = cursor.fetchall()
-    if records:
-        print(records)
-    else:
-        messagebox.showinfo("No records found")
+    try:
+        cursor.execute("SELECT * FROM company_data WHERE company_founded = ?", (date_input))
+        records = cursor.fetchall()
+        if records:
+            print(records)
+            
+    except Exception as DataError:
+        messagebox.showerror("Error", "No Records Found")
         
        
 
 def companies_between_dates():
     start_date_entry = input_start_date.get()
     end_date_entry = input_end_date.get()
-    start_date = datetime.strptime(start_date_entry, "%Y-%m-%d")
-    end_date = datetime.strptime(end_date_entry, "%Y-%m-%d")
+    try: 
+        start_date = datetime.strptime(start_date_entry, "%d/%m/%Y")
+        end_date = datetime.strptime(end_date_entry, "%d/%m/%Y")
 
-        
-    cursor.execute('SELECT * FROM company_data WHERE company_founded BETWEEN ? AND ?',(start_date, end_date))
+     
+        cursor.execute('SELECT * FROM company_data WHERE company_founded BETWEEN ? AND ?',(start_date, end_date))
 
 
-    print(f'{"Company Name":<19}{"Industry":<21}{"Revenue":<10}{"Growth":<10}{"Employee Count":<20}{"Headquarter":<20}{"Founded Date":<10}')
-    print(f'{"_":_<120}')
+        print(f'{"Company Name":<19}{"Industry":<21}{"Revenue":<10}{"Growth":<10}{"Employee Count":<20}{"Headquarter":<20}{"Founded Date":<10}')
+        print(f'{"_":_<120}')
 
-    for row in cursor.fetchall():
-        record = f'{row.company_name:<19}{row.industry:<21}{row.year_revenue:<10}{row.revenue_growth:<10}{row.employee_no:<20}{row.headquarter:<20}{date:<10}'
+        for row in cursor.fetchall():
+            date = datetime.strftime(row.company_founded, "%d/%m/%Y")
+            record = f'{row.company_name:<19}{row.industry:<21}{row.year_revenue:<10}{row.revenue_growth:<10}{row.employee_no:<20}{row.headquarter:<20}{date:<10}'
 
-        print(record)
+            print(record)
 
         print('\n\n')
+    except Exception as DataError:
+        messagebox.showerror("Error", "No Records Found")
 
 #GUI start
 master = tk.Tk()
